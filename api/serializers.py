@@ -5,6 +5,9 @@ from .models import Comment, Project, Task
 
 class ProjectSerializer(serializers.ModelSerializer):
 
+    id = serializers.IntegerField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+
     class Meta:
 
         model = Project
@@ -13,6 +16,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
 
+    id = serializers.IntegerField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+
     class Meta:
 
         model = Task
@@ -20,6 +26,9 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+
+    id = serializers.IntegerField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
 
