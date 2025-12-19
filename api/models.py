@@ -41,3 +41,14 @@ class Comment(models.Model):
     def __str__(self):
 
         return self.content
+
+
+class Member(models.Model):
+
+    name = models.CharField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="members")
+
+    def __str__(self):
+
+        return self.name

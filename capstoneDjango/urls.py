@@ -1,3 +1,5 @@
+# flake8: noqa
+
 """
 URL configuration for capstoneDjango project.
 
@@ -18,6 +20,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from api.views import (  # CommentDetailView,; MemberDetailView,
+    ProjectDetailView,
+    ProjectListCreateView,
+    TaskDetailView,
+    TaskListCreateView,
+)
+
+from .views import home
+
 urlpatterns = [
+    path("", home, name="home"),
     path("admin/", admin.site.urls),
+    # Task Model URLS
+    path("tasks/", TaskListCreateView.as_view(), name="task-list-create"),
+    path("tasks/<int:pk>/", TaskDetailView.as_view(), name="task-detail"),
+    # Project Model URLS
+    path("projects/", ProjectListCreateView.as_view(), name="project-detail"),
+    path("projects/<int:pk>/", ProjectDetailView.as_view(), name="task-detail"),
 ]
