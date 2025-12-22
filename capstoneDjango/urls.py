@@ -18,24 +18,40 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
 from api.views import (  # CommentDetailView,; MemberDetailView,
+    CommentViewSet,
+    MemberViewSet,
     ProjectDetailView,
     ProjectListCreateView,
+    ProjectViewSet,
     TaskDetailView,
     TaskListCreateView,
+    TaskViewSet,
 )
 
 from .views import home
 
+router = DefaultRouter()
+router.register(r"tasks", TaskViewSet, basename="task")
+router.register(r"projects", ProjectViewSet, basename="project")
+router.register(r"comments", CommentViewSet, basename="comment")
+router.register(r"members", MemberViewSet, basename="member")
+
 urlpatterns = [
     path("", home, name="home"),
     path("admin/", admin.site.urls),
-    # Task Model URLS
-    path("tasks/", TaskListCreateView.as_view(), name="task-list-create"),
-    path("tasks/<int:pk>/", TaskDetailView.as_view(), name="task-detail"),
+    # API app URLs
+    path("api/", include(router.urls)),
+    # Example for usage of Router URL
+    # - tasks/ -> all object instances of tasks
+    # - tasks/1/ -> first instance of tasks
+    # Tasks Model URLs
+    # path("tasks/", TaskListCreateView.as_view(), name="task-list-create"),
+    # path("tasks/<int:pk>/", TaskDetailView.as_view(), name="task-detail"),
     # Project Model URLS
-    path("projects/", ProjectListCreateView.as_view(), name="project-detail"),
-    path("projects/<int:pk>/", ProjectDetailView.as_view(), name="task-detail"),
+    # path("projects/", ProjectListCreateView.as_view(), name="project-detail"),
+    # path("projects/<int:pk>/", ProjectDetailView.as_view(), name="task-detail"),
 ]
