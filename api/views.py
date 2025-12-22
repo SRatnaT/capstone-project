@@ -5,9 +5,11 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Comment, Member, Project, Task
+from .permissions import IsOwnerOrReadOnly
 from .serializers import CommentSerializer, MemeberSerializer, ProjectSerializer, TaskSerializer
 
 # Generic Class based Views
@@ -90,12 +92,14 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
 
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
 
 class CommentViewSet(viewsets.ModelViewSet):

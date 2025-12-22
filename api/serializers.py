@@ -7,22 +7,26 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
 
         model = Project
         fields = "__all__"
+        read_only_fields = ["owner"]
 
 
 class TaskSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
 
         model = Task
         fields = "__all__"
+        read_only_fields = ["owner"]
 
 
 class CommentSerializer(serializers.ModelSerializer):
