@@ -94,6 +94,10 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
+    def perform_create(self, serializer):
+
+        serializer.save(owner=self.request.user)
+
 
 class ProjectViewSet(viewsets.ModelViewSet):
 

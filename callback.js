@@ -2,7 +2,7 @@
 function asyncFetchData(callback) {
 
     setTimeout(() => {
-        const success = true
+        const success = false
 
         if (success) {
 

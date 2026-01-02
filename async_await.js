@@ -1,35 +1,69 @@
 
+// const fetchData = () => {
+
+//     return new Promise((resolve, reject) => {
+
+//         setTimeout(() => {
+
+//             const success = false
+
+//             if (success) {
+
+//                 resolve("Async await data fetched success")
+
+//             } else (
+//                 reject("Async await data fetch error")
+//             )
+
+//         }, 2000)
+
+//     })
+// }
+
+
+// async function getData() {
+//     try {
+//         const result = await fetchData();
+//         console.log(result);
+
+//     } catch (err) {
+
+//         console.log(err);
+
+
+//     }
+
+// }
+
+// getData()
+
+
 const fetchData = () => {
 
     return new Promise((resolve, reject) => {
-
         setTimeout(() => {
 
-            const success = false
+            const success = true
 
             if (success) {
-
-                resolve("Async await data fetched success")
-
-            } else (
-                reject("Async await data fetch error")
-            )
+                resolve("Async await success")
+            } else {
+                reject("Asybc await failure")
+            }
 
         }, 2000)
-
     })
 }
 
+const getData = async () => {
 
-async function getData() {
     try {
-        const result = await fetchData();
+        const result = await fetchData()
         console.log(result);
 
-    } catch (err) {
+    } catch(err) {
 
-        console.log(err);
-
+        console.error(err)
 
     }
 
