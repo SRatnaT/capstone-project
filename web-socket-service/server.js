@@ -1,65 +1,80 @@
 
 const WebSocket = require('ws')
+const http = require('http')
+const express = require('express')
+
+// Creating a Express application 
+
+const app = express()
+app.use(express.json())
+
+
+// Creating a HTTP server, linking it to express application 
+
+const server = http.createServer(app)
+
 
 // Create Websocket server
 
-function createWSServer(port = 8080){
-    const wss = new WebSocket.Server({port})
+let wss
+
+function createWSServer(port = 8080) {
+    wss = new WebSocket.Server({ server })
 
     console.log(`WebSocket server running on ws://localhost:${port}`)
 
-    wss.on('connection' , (ws) => {
+    wss.on('connection', (ws) => {
         console.log("New Client Connection");
 
-        ws.on('message' , (message) => {
+        ws.on('message', (message) => {
             console.log(`Received: ${message}`);
-            
+
             wss.clients.forEach(client => {
-               if(client.readyState === WebSocket.OPEN){
-                client.send(message.toString())
-               } 
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(message.toString())
+                }
             })
         })
 
-      
+
     })
 
     return wss
 }
 
-// createWSServer()
+// Creating an endpoint for Django to interact with Node
 
-module.exports = {createWSServer}
+app.post('/broadcast', (req, res) => {
 
-// const wss = new WebSocket.Server({port: 8080})
+    console.log("BROADCAST HIT:", req.body);
 
-// console.log("WebSocket server running on ws://localhost:8080")
+    const payload = req.body
 
-// // New Client Connection Handling
+    wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(payload.data))
+        }
+    })
 
-// wss.on('connection' , (ws) => {
-//     console.log("New client connection:");
+    res.json({ status: "Message Broadcasted" })
 
-//     // When Client sends Message
+})
 
-//     ws.on('message' , (message) => {
-//         console.log(`Received: ${message}`);
+// require.main === module only makes sure that the code within it is executed when the file is run from CLI
 
-//         // Broadcast the message to all the clients
+if (require.main === module) {
+    createWSServer()
 
-//         wss.clients.forEach((client) => {
+    // Starting the server
 
-//             if(client.readyState === WebSocket.OPEN){
-//                 client.send(message.toString())
-//             }
-//         })
-        
-//     })
+    server.listen(8080, () => {
+        console.log('Node service running on http://localhost:8080');
 
-//     // Connection Close Handling
+    })
+}
 
-//     ws.on('close' , () => {
-//         console.log("Client disconnected from WS server")
-//     })
-    
-// })
+
+
+
+module.exports = { createWSServer }
+

@@ -1,6 +1,9 @@
 # from django.shortcuts import render
 
 # flake8: noqa
+import http.client
+import json
+from urllib.parse import urlparse
 
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
@@ -19,9 +22,6 @@ class TaskListCreateView(ListCreateAPIView):
 
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-
-
-status
 
 
 class TaskDetailView(RetrieveUpdateDestroyAPIView):
@@ -97,6 +97,70 @@ class TaskViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
 
         serializer.save(owner=self.request.user)
+
+        new_task = serializer.save()
+
+        try:
+
+            url = "http://localhost:8080/broadcast"
+            parsed_url = urlparse(url)
+
+            conn = http.client.HTTPConnection(parsed_url.hostname, parsed_url.port, timeout=2)
+
+            payload = json.dumps({"event": "TASK CREATED", "data": TaskSerializer(new_task).data})
+
+            headers = {"Content-Type": "application/json"}
+
+            conn.request("POST", parsed_url.path, body=payload, headers=headers)
+            response = conn.getresponse()
+
+            print("TASK CREATED RES:", response)
+
+            response.read()
+            conn.close()
+
+        except Exception as e:
+
+            print(f"Failed to connect to websocket server: {e}")
+
+    def perform_update(self, serializer):
+
+        task = serializer.save()
+
+        try:
+
+            url = "http://localhost:8080/broadcast"
+            parsed_url = urlparse(url)
+
+            conn = http.client.HTTPConnection(parsed_url.hostname, parsed_url.port, timeout=2)
+
+            payload = json.dumps({"event": "TASK UPDATED", "data": TaskSerializer(task).data})
+
+            headers = {"Content-Type": "application/json"}
+
+            conn.request("POST", parsed_url.path, body=payload, headers=headers)
+            response = conn.getresponse()
+            response.read()  # read response to complete request
+            conn.close()
+
+        except Exception as e:
+            # Log the error but don’t break the update
+            print(f"Failed to notify WebSocket server: {e}")
+
+        # try:
+
+        #     requests.post(
+        #         'http://localhost:8080/broadcast',
+        #         json = {
+        #             'event' : 'TASK UPDATED',
+        #             'data' : TaskSerializer(task).data
+        #         },
+        #         timeout = 2
+        #     )
+
+        # except requests.exceptions.RequestException as e:
+        #     # Log the error but don’t break the update
+        #     print(f"Failed to notify WebSocket server: {e}")
 
 
 class ProjectViewSet(viewsets.ModelViewSet):

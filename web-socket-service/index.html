@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket UI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
+
+        #status {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>WebSocket Messages</h1>
+
+    <div id="status">Connecting...</div>
+    <div id="messages"></div>
+
+    <input type="text" id="messageInput" placeholder="Type a message">
+    <button id="sendBtn">Send</button>
+
+    <script>
+        // Connect to your WebSocket server
+        const ws = new WebSocket('ws://localhost:8080');
+
+        const status = document.getElementById('status');
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // Update connection status
+        ws.onopen = () => {
+            status.textContent = "Connected ✅";
+            status.style.color = "green";
+        };
+
+        ws.onclose = () => {
+            status.textContent = "Disconnected ❌";
+            status.style.color = "red";
+        };
+
+        ws.onerror = (err) => {
+            status.textContent = "Error ❌";
+            status.style.color = "red";
+            console.error(err);
+        };
+
+        // Listen for messages from the server
+        ws.onmessage = (event) => {
+            const msg = document.createElement('div');
+            msg.textContent = event.data; // show message
+            messagesDiv.appendChild(msg);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // scroll down
+        };
+
+        // Send message to server
+        sendBtn.onclick = () => {
+            const text = messageInput.value.trim();
+            if (text !== '') {
+                ws.send(text); // send to WebSocket server
+                messageInput.value = '';
+            }
+        };
+
+        // Optional: send message on Enter key
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendBtn.click();
+        });
+    </script>
+
+</body>
+
+</html>
