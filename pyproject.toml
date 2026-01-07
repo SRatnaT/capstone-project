@@ -8,9 +8,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 django = "^6.0"
-requests = "^2.32.5"
 djangorestframework = "^3.16.1"
 psycopg2-binary = "^2.9.11"
+drf-yasg = "^1.21.5"
+requests = "^2.32.5"
+pytest-django = "^4.11.1"
+slugify = "^0.0.1"
+pytest-mock = "^3.15.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -18,6 +22,7 @@ black = "^25.12.0"
 isort = "^7.0.0"
 flake8 = "^7.3.0"
 pre-commit = "^4.5.0"
+pytest-mock = "^3.15.1"
 
 
 [build-system]
@@ -27,7 +32,6 @@ build-backend = "poetry.core.masonry.api"
 [dependency-groups]
 dev = [
     "black>=25.12.0",
-    "drf-yasg>=1.21.11",
     "flake8>=7.3.0",
     "isort>=7.0.0",
     "pre-commit>=4.5.0",
