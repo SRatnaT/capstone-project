@@ -168,7 +168,20 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
 
-        serializer.save(owner=self.request.user)
+        # breakpoint()
+
+        new_project = serializer.save(owner=self.request.user)
+
+        try:
+
+            requests.post(
+                "http://localhost:8080/broadcast",
+                json={"event": "PROJECT CREATED", "data": ProjectSerializer(new_project).data},
+                timeout=2,
+            )
+
+        except requests.exceptions.RequestException as e:
+            print(f"Failed to notify Websocket server: {e}")
 
 
 class CommentViewSet(viewsets.ModelViewSet):

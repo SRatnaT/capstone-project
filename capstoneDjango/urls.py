@@ -17,6 +17,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from debug_toolbar.toolbar import debug_toolbar_urls
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
@@ -57,6 +59,7 @@ router.register(r"projects", ProjectViewSet, basename="project")
 router.register(r"comments", CommentViewSet, basename="comment")
 router.register(r"members", MemberViewSet, basename="member")
 
+
 urlpatterns = [
     path("", home, name="home"),
     path("admin/", admin.site.urls),
@@ -77,3 +80,8 @@ urlpatterns = [
     # path("projects/", ProjectListCreateView.as_view(), name="project-detail"),
     # path("projects/<int:pk>/", ProjectDetailView.as_view(), name="task-detail"),
 ]
+
+
+if settings.DEBUG:
+
+    urlpatterns += debug_toolbar_urls()
