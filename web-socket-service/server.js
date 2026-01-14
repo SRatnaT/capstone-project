@@ -30,7 +30,7 @@ function createWSServer(port = 8080) {
             console.log(`Received: ${message}`);
 
             wss.clients.forEach(client => {
-                if (client.readyState === WebSocket.OPEN) {
+                if (ws !== client && client.readyState === WebSocket.OPEN) {
                     client.send(message.toString())
                 }
             })
