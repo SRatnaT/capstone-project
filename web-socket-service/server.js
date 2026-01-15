@@ -26,9 +26,22 @@ function createWSServer(port = 8080) {
     wss.on('connection', (ws) => {
         console.log("New Client Connection");
 
+        // ws.on('message', (message) => {
+        //     console.log(`Received: ${message}`);
+
+        //     wss.clients.forEach(client => {
+        //         if (ws !== client && client.readyState === WebSocket.OPEN) {
+        //             client.send(message.toString())
+        //         }
+        //     })
+        // })
+
+        // BUGGED VERSION FOR DEBUGGING PURPOSE
+
         ws.on('message', (message) => {
             console.log(`Received: ${message}`);
 
+            // BUG: typo in readyState check
             wss.clients.forEach(client => {
                 if (ws !== client && client.readyState === WebSocket.OPEN) {
                     client.send(message.toString())
@@ -38,6 +51,8 @@ function createWSServer(port = 8080) {
 
 
     })
+
+
 
     return wss
 }
@@ -50,8 +65,15 @@ app.post('/broadcast', (req, res) => {
 
     const payload = req.body
 
+    // wss.clients.forEach((client) => {
+    //     if (client.readyState === WebSocket.OPEN) {
+    //         client.send(JSON.stringify(payload.data))
+    //     }
+    // })
+
+    //BUGGED CODE:
     wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
+        if (client.readySttate === WebSocket.OPEN) {
             client.send(JSON.stringify(payload.data))
         }
     })
@@ -63,14 +85,15 @@ app.post('/broadcast', (req, res) => {
 // require.main === module only makes sure that the code within it is executed when the file is run from CLI
 
 if (require.main === module) {
-    createWSServer()
-
     // Starting the server
 
     server.listen(8080, () => {
         console.log('Node service running on http://localhost:8080');
 
     })
+    createWSServer()
+
+
 }
 
 
