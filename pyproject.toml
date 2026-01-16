@@ -16,6 +16,7 @@ pytest-django = "^4.11.1"
 slugify = "^0.0.1"
 pytest-mock = "^3.15.1"
 django-debug-toolbar = "^6.1.0"
+snakeviz = "^2.2.2"
 
 
 [tool.poetry.group.dev.dependencies]

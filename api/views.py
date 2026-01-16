@@ -6,7 +6,9 @@ import json
 from urllib.parse import urlparse
 
 import requests
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.views import View
 from rest_framework import status, viewsets
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -194,3 +196,21 @@ class MemberViewSet(viewsets.ModelViewSet):
 
     queryset = Member.objects.all()
     serializer_class = MemeberSerializer
+
+
+class ProfilerTestView(View):
+
+    def get(self, request):
+
+        print(f"GET Reqeust Path: {request.path}")
+
+        result = []
+        for i in range(1, 10001):
+            for j in range(1, 1001):
+                result.append(i * j)
+        return JsonResponse({"result": len(result)})
+
+    def post(self, request):
+
+        print(f"POST Request Path: {request.path}")
+        return HTTPResponse("This is the progiler POST Request Response")

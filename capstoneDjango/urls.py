@@ -30,6 +30,7 @@ from rest_framework.routers import DefaultRouter
 from api.views import (  # CommentDetailView,; MemberDetailView,
     CommentViewSet,
     MemberViewSet,
+    ProfilerTestView,
     ProjectDetailView,
     ProjectListCreateView,
     ProjectViewSet,
@@ -70,6 +71,7 @@ urlpatterns = [
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="redoc-ui"),
     # API app URLs
     path("api/", include(router.urls)),
+    path("slow-api-test/", ProfilerTestView.as_view()),
     # Example for usage of Router URL
     # - tasks/ -> all object instances of tasks
     # - tasks/1/ -> first instance of tasks

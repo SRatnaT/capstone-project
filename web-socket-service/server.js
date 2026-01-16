@@ -13,6 +13,27 @@ app.use(express.json())
 
 const server = http.createServer(app)
 
+// Heavy and Slow Function 
+
+function factorial(n) {
+
+
+    if (n == 0 || n == 1) return 1
+
+    return n * factorial(n - 1)
+
+}
+
+function fakeDBCall() {
+
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve("Suceess")
+        }, 2000)
+    })
+}
+
+
 
 // Create Websocket server
 
@@ -73,13 +94,36 @@ app.post('/broadcast', (req, res) => {
 
     //BUGGED CODE:
     wss.clients.forEach((client) => {
-        if (client.readySttate === WebSocket.OPEN) {
+        if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify(payload.data))
         }
     })
 
     res.json({ status: "Message Broadcasted" })
 
+})
+
+app.get("/fake-node-get", async (req, res) => {
+
+    try {
+
+        const data = await fakeDBCall()
+
+        res.json({ data: data })
+
+
+    } catch (err) {
+
+        console.error(err)
+
+    }
+
+})
+
+app.get("/slow-api", (req, res) => {
+    const data = factorial(100)
+
+    res.json({ data: data })
 })
 
 // require.main === module only makes sure that the code within it is executed when the file is run from CLI
@@ -95,6 +139,9 @@ if (require.main === module) {
 
 
 }
+
+
+
 
 
 module.exports = { createWSServer }
